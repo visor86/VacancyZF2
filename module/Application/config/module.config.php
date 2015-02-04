@@ -73,7 +73,10 @@ return array(
     ),
     'controllers' => array(
         'invokables' => array(
-            'Application\Controller\Index' => 'Application\Controller\IndexController'
+            'Application\Controller\Index' => 'Application\Controller\IndexController',
+            'Application\Controller\Vacancy' => 'Application\Controller\VacancyController',
+            'Application\Controller\Department' => 'Application\Controller\DepartmentController',
+            'Application\Controller\Language' => 'Application\Controller\LenguageController'
         ),
     ),
     'view_manager' => array(
@@ -99,4 +102,34 @@ return array(
             ),
         ),
     ),
+    'doctrine' => array(
+        'connection' => array(
+            'orm_default' => array(
+                'driverClass' =>'Doctrine\DBAL\Driver\PDOMySql\Driver',
+                'params' => array(
+                    'host'      => 'localhost',
+                    'port'      => '3306',
+                    'user'      => 'zend',
+                    'password'  => 'zend',
+                    'dbname'    => 'zend',
+                    'charset'  => 'utf8',
+                    'driverOptions' => array(
+                        \PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'
+                    )
+                )
+            )
+        ),
+        'driver' => array(
+            'Application_driver' => array(
+                'class' => 'Doctrine\ORM\Mapping\Driver\AnnotationDriver',
+                'cache' => 'array',
+                'paths' => array(__DIR__ . '/../src/Application/Entity')
+            ),
+            'orm_default' => array(
+                'drivers' => array(
+                     'Application\Entity' =>  'Application_driver'
+                ),
+            ),
+        )
+    )
 );
