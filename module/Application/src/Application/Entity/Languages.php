@@ -3,6 +3,10 @@
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Zend\InputFilter\InputFilter;
+use Zend\InputFilter\Factory as InputFactory;
+use Zend\InputFilter\InputFilterAwareInterface;
+use Zend\InputFilter\InputFilterInterface;
 
 /**
  * Languages
@@ -10,7 +14,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="Languages")
  * @ORM\Entity
  */
-class Languages
+class Languages implements InputFilterAwareInterface
 {
     /**
      * @var integer
@@ -28,38 +32,90 @@ class Languages
      */
     private $title;
 
-
-
     /**
-     * Get languageId
+     * Magic getter to expose protected properties.
      *
-     * @return integer 
+     * @param string $property
+     * @return mixed
      */
-    public function getLanguageId()
+    public function __get($property) 
     {
-        return $this->languageId;
+        return $this->$property;
     }
-
+  
     /**
-     * Set title
+     * Magic setter to save protected properties.
      *
-     * @param string $title
-     * @return Languages
+     * @param string $property
+     * @param mixed $value
      */
-    public function setTitle($title)
+    public function __set($property, $value) 
     {
-        $this->title = $title;
-
-        return $this;
+        $this->$property = $value;
     }
-
+  
     /**
-     * Get title
+     * Convert the object to an array.
      *
-     * @return string 
+     * @return array
      */
-    public function getTitle()
+    public function getArrayCopy() 
     {
-        return $this->title;
+        return get_object_vars($this);
+    }
+    
+    /**
+     * Helper function.
+     */
+    public function exchangeArray($data)
+    {
+        foreach ($data as $key => $val) {
+            if (property_exists($this, $key)) {
+                $this->$key = ($val !== null) ? $val : null;
+            }
+        }
+    }
+    
+    public function setInputFilter(InputFilterInterface $inputFilter)
+    {
+        throw new \Exception("Not used");
+    }
+    
+    public function getInputFilter()
+    {
+        if (!$this->inputFilter) {
+            $inputFilter = new InputFilter();
+ 
+            $inputFilter->add(array(
+                'name'     => 'languageId',
+                'required' => true,
+                'filters'  => array(
+                    array('name' => 'Int'),
+                ),
+            ));
+ 
+            $inputFilter->add(array(
+                'name'     => 'title',
+                'required' => true,
+                'filters'  => array(
+                    array('name' => 'StripTags'),
+                    array('name' => 'StringTrim'),
+                ),
+                'validators' => array(
+                    array(
+                        'name'    => 'StringLength',
+                        'options' => array(
+                            'encoding' => 'UTF-8',
+                            'min'      => 1,
+                            'max'      => 100,
+                        ),
+                    ),
+                ),
+            ));
+ 
+            $this->inputFilter = $inputFilter;
+        }
+ 
+        return $this->inputFilter;
     }
 }

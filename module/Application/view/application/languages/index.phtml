@@ -1,0 +1,34 @@
+<?php
+$title = 'List languages';
+$this->headTitle($title);
+print $this->showMessages();
+?>
+<h1><?php echo $this->escapeHtml($title); ?></h1>
+<table class="table">
+    <thead>
+        <tr>
+            <th>LanguageId</th>
+            <th>Title</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+<?php
+$rows = $this->languages;
+foreach($rows as $row):
+?>
+        <tr>
+            <td><?= $row->languageId?></td>
+            <td><?= $row->title ?></td>
+            <td>
+                <a href="<?= $this->url('languages', array('action' => 'edit', 'id' => $row->languageId))?>">
+                <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                </a>
+                <a href="<?= $this->url('languages', array('action' => 'delete', 'id' => $row->languageId))?>">
+                <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                </a>
+            </td>
+        </tr>
+<?php endforeach?>
+    </tbody>
+</table>

@@ -52,6 +52,20 @@ return array(
                     ),
                 ),
             ),
+            'languages' => array(
+                'type'    => 'segment',
+                'options' => array(
+                    'route'    => '/languages[/:action][/:id]',
+                    'constraints' => array(
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id'     => '[0-9]+',
+                    ),
+                    'defaults' => array(
+                        'controller' => 'Application\Controller\Languages',
+                        'action'     => 'index',
+                    ),
+                ),
+            ),
             'application' => array(
                 'type'    => 'Literal',
                 'options' => array(
@@ -107,7 +121,7 @@ return array(
             'Application\Controller\Index' => 'Application\Controller\IndexController',
             'Application\Controller\Vacancy' => 'Application\Controller\VacancyController',
             'Application\Controller\Department' => 'Application\Controller\DepartmentController',
-            'Application\Controller\Language' => 'Application\Controller\LenguageController'
+            'Application\Controller\Languages' => 'Application\Controller\LanguagesController'
         ),
     ),
     'view_helpers' => array(
