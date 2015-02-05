@@ -1,0 +1,34 @@
+<?php
+$title = 'Add new departmet';
+$this->headTitle($title);
+print $this->showMessages();
+?>
+<h1><?php echo $this->escapeHtml($title); ?></h1>
+<table class="table">
+    <thead>
+        <tr>
+            <th>DepartmentId</th>
+            <th>Title</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+<?php
+$rows = $this->departments;
+foreach($rows as $row):
+?>
+        <tr>
+            <td><?= $row->getDepartmentId()?></td>
+            <td><?= $row->getTitle() ?></td>
+            <td>
+                <a href="<?= $this->url('department', array('action' => 'edit', 'id' => $row->getDepartmentId()))?>">
+                <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                </a>
+                <a href="<?= $this->url('department', array('action' => 'delete', 'id' => $row->getDepartmentId()))?>">
+                <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                </a>
+            </td>
+        </tr>
+<?php endforeach?>
+    </tbody>
+</table>

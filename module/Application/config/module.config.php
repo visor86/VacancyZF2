@@ -24,6 +24,34 @@ return array(
             // new controllers and actions without needing to create a new
             // module. Simply drop new controllers in, and you can access them
             // using the path /application/:controller/:action
+            'vacancy' => array(
+                'type'    => 'segment',
+                'options' => array(
+                    'route'    => '/vacancy[/:action][/:id]',
+                    'constraints' => array(
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id'     => '[0-9]+',
+                    ),
+                    'defaults' => array(
+                        'controller' => 'Application\Controller\Vacancy',
+                        'action'     => 'index',
+                    ),
+                ),
+            ),
+            'department' => array(
+                'type'    => 'segment',
+                'options' => array(
+                    'route'    => '/department[/:action][/:id]',
+                    'constraints' => array(
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id'     => '[0-9]+',
+                    ),
+                    'defaults' => array(
+                        'controller' => 'Application\Controller\Department',
+                        'action'     => 'index',
+                    ),
+                ),
+            ),
             'application' => array(
                 'type'    => 'Literal',
                 'options' => array(
@@ -39,12 +67,15 @@ return array(
                     'default' => array(
                         'type'    => 'Segment',
                         'options' => array(
-                            'route'    => '/[:controller[/:action]]',
+                            'route'    => '/[:controller[/:action[/:id]]]',
                             'constraints' => array(
                                 'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
                                 'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id'     => '[0-9]+',
                             ),
                             'defaults' => array(
+                                'controller' => 'Application\Controller\Index',
+                                'action'     => 'index',
                             ),
                         ),
                     ),
@@ -77,6 +108,11 @@ return array(
             'Application\Controller\Vacancy' => 'Application\Controller\VacancyController',
             'Application\Controller\Department' => 'Application\Controller\DepartmentController',
             'Application\Controller\Language' => 'Application\Controller\LenguageController'
+        ),
+    ),
+    'view_helpers' => array(
+        'invokables' => array(
+            'showMessages' => 'Application\View\Helper\ShowMessages',
         ),
     ),
     'view_manager' => array(
