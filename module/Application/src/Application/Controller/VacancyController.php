@@ -4,6 +4,7 @@ namespace Application\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
+use Application\Entity;
 
 class VacancyController extends AbstractActionController
 {
@@ -127,41 +128,42 @@ class VacancyController extends AbstractActionController
             $form->setData($request->getPost());
             
             if ($form->isValid()) {
-                $vacancy->enabled = $request->getPost('enabled');
-                $arTitle = $request->getPost('title');
-                $arText = $request->getPost('text');
-                $arId = $request->getPost('id');
-                foreach ($arTitle as $languageId => $value) {
-                    if (!empty($value)) {
-                        if (!empty($arId[$languageId])) {
-                            $description = $objectManager->find('\Application\Entity\Descriptions', (int) $arId[$languageId]);
-                        } else {
-                            $description = new \Application\Entity\Descriptions();
-                            $language = $objectManager->find('\Application\Entity\Languages', (int) $id);
-                            $description->setLanguage($language);
-                            $description->setVacancy($vacancy);
-                        }
-                        $description->setVacancyText($arText[$languageId]);
-                        $description->setVacancyTitle($arTitle[$languageId]);
-                        if (empty($arId[$languageId])) {
-                            $objectManager->persist($description);
-                        }
-                    } else {
-                        if (!empty($arId[$languageId])) {
-                            $description = $objectManager->find('\Application\Entity\Descriptions', $arId[$languageId]);
-                            $objectManager->remove($description);
-                        }
-                    } 
-                }
-                $departments = $objectManager->getRepository('\Application\Entity\Departments')
-                    ->findBy(array('departmentId' => $request->getPost('departmentsDepartment')));
-                
-                $vacancy->clear();
-                foreach ($departments as $department) {
-                    $vacancy->getDepartments();
-                    $vacancy->addDepartments($department);
-                }
                 try {
+                    $vacancy->enabled = $request->getPost('enabled');
+                    $arTitle = $request->getPost('title');
+                    $arText = $request->getPost('text');
+                    $arId = $request->getPost('id');
+                    foreach ($arTitle as $languageId => $value) {
+                        if (!empty($value)) {
+                            if (!empty($arId[$languageId])) {
+                                $description = $objectManager->find('\Application\Entity\Descriptions', (int) $arId[$languageId]);
+                            } else {
+                                $description = new \Application\Entity\Descriptions();
+                                $language = $objectManager->find('\Application\Entity\Languages', (int) $languageId);
+                                $description->setLanguage($language);
+                                $description->setVacancy($vacancy);
+                            }
+                            $description->setVacancyText($arText[$languageId]);
+                            $description->setVacancyTitle($arTitle[$languageId]);
+                            if (empty($arId[$languageId])) {
+                                $objectManager->merge($description);
+                            }
+                        } else {
+                            if (!empty($arId[$languageId])) {
+                                $description = $objectManager->find('\Application\Entity\Descriptions', $arId[$languageId]);
+                                $objectManager->remove($description);
+                            }
+                        } 
+                    }
+                    $departments = $objectManager->getRepository('\Application\Entity\Departments')
+                        ->findBy(array('departmentId' => $request->getPost('departmentsDepartment')));
+
+                    $vacancy->clear();
+                    foreach ($departments as $department) {
+                        $vacancy->getDepartments();
+                        $vacancy->addDepartments($department);
+                    }
+                
                     $objectManager->flush();
                 } catch (\Exception $e) {
                     $this->flashMessenger()->addErrorMessage($e->getMessage());

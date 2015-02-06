@@ -209,4 +209,64 @@ class Vacancies implements InputFilterAwareInterface
         
         return $this;
     }
+    
+    public function getVacanciesAll(\Doctrine\ORM\EntityManager $em, $filter = array()) {
+        $idLanguage = 1;
+        $qb = $em->createQueryBuilder();
+        $qb->select('d, v')
+            ->from('Application\Entity\Descriptions', 'd')
+            ->join('d.vacancies', 'v')
+            ->where('v.enabled = 1')
+        ;
+        if(!empty($filter['lang'])) {
+            $qb->andWhere($qb->expr()->orX(
+                'd.languageId = ?1', 'd.languageId = ?2'
+            ))
+            ->setParameter(1, (int) $filter['lang'])
+            ->setParameter(2, $idLanguage)
+            ;
+        }
+        if(!empty($filter['dep'])) {
+            $qb->join('v.departmentsDepartment', 'dep')
+                ->andWhere('dep.departmentId IN (?3)')
+                ->setParameter(3, $filter['dep'])
+            ;
+        }
+        $qb->orderBy('d.languageId', 'DESC')
+            ->addOrderBy('v.vacancyId', 'DESC')
+        ;
+        $query = $qb->getQuery();
+        $query->useResultCache(TRUE);
+        $result = array();
+        foreach ($query->getArrayResult() as $item) {
+            if (!array_key_exists($item['vacancies']['vacancyId'], $result)) {
+                $result[$item['vacancies']['vacancyId']] = $item;
+            }
+        }
+        return $result;
+    }
+    
+    public function getDepartnetsForVacancies(\Doctrine\ORM\EntityManager $em) {
+        $qb = $em->createQueryBuilder();
+        $qb->select('d')
+            ->from('Application\Entity\Departments', 'd')
+            ->join('d.vacanciesVacancy', 'v')
+            ->groupBy('d.departmentId')
+        ;
+        $query = $qb->getQuery();
+        $query->useResultCache(TRUE);
+        return $query->getArrayResult();
+    }
+    
+    public function getLanguagesForVacancies(\Doctrine\ORM\EntityManager $em) {
+        $qb = $em->createQueryBuilder();
+        $qb->select('l')
+            ->from('Application\Entity\Languages', 'l')
+            ->join('l.descriptions', 'd')
+            ->groupBy('l.languageId')
+        ;
+        $query = $qb->getQuery();
+        $query->useResultCache(TRUE);
+        return $query->getArrayResult();
+    }
 }
