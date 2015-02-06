@@ -31,7 +31,42 @@ class Languages implements InputFilterAwareInterface
      * @ORM\Column(name="title", type="string", length=45, nullable=true)
      */
     private $title;
+    
+    /**
+     * @ORM\OneToMany(targetEntity="\Application\Entity\Descriptions", mappedBy="languages", cascade={"persist"})
+     */
+    private $descriptions; 
+    
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     *
+     * @ORM\ManyToMany(targetEntity="Application\Entity\Vacancies", mappedBy="languages", cascade={"persist"})
+     */
+    private $vacancies;
 
+    /**
+     * Set title
+     *
+     * @param string $title
+     * @return Departments
+     */
+    public function setTitle($title)
+    {
+        $this->title = $title;
+
+        return $this;
+    }
+
+    /**
+     * Get title
+     *
+     * @return string 
+     */
+    public function getTitle()
+    {
+        return $this->title;
+    }
+    
     /**
      * Magic getter to expose protected properties.
      *

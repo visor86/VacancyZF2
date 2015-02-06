@@ -5,21 +5,28 @@ namespace Application\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * VacanciesLanguages
+ * Descriptions
  *
- * @ORM\Table(name="Vacancies_Languages", indexes={@ORM\Index(name="fk_Vacancies_Languages_Vacancies1_idx", columns={"vacancy_id"}), @ORM\Index(name="fk_Vacancies_Languages_Languages1_idx", columns={"language_id"})})
+ * @ORM\Table(name="Descriptions", indexes={@ORM\Index(name="fk_Descriptions_Vacancies1_idx", columns={"vacancy_id"}), @ORM\Index(name="fk_Descriptions_Languages1_idx", columns={"language_id"})})
  * @ORM\Entity
  */
-class VacanciesLanguages
+class Descriptions
 {
     /**
      * @var integer
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="NONE")
+     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $id;
+    
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="language_id", type="integer", nullable=false)
+     */
+    private $languageId;
 
     /**
      * @var string
@@ -38,26 +45,24 @@ class VacanciesLanguages
     /**
      * @var \Application\Entity\Vacancies
      *
-     * @ORM\Id
      * @ORM\GeneratedValue(strategy="NONE")
-     * @ORM\OneToOne(targetEntity="Application\Entity\Vacancies")
+     * @ORM\ManyToOne(targetEntity="Application\Entity\Vacancies", inversedBy="descriptions", cascade={"persist"})
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="vacancy_id", referencedColumnName="vacancy_id")
+     *   @ORM\JoinColumn(name="vacancy_id", referencedColumnName="vacancy_id", unique=false)
      * })
      */
-    private $vacancy;
+    private $vacancies;
 
     /**
      * @var \Application\Entity\Languages
      *
-     * @ORM\Id
      * @ORM\GeneratedValue(strategy="NONE")
-     * @ORM\OneToOne(targetEntity="Application\Entity\Languages")
+     * @ORM\ManyToOne(targetEntity="Application\Entity\Languages", inversedBy="descriptions", cascade={"persist"})
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="language_id", referencedColumnName="language_id")
+     *   @ORM\JoinColumn(name="language_id", referencedColumnName="language_id", unique=false)
      * })
      */
-    private $language;
+    private $languages;
 
 
 
@@ -88,7 +93,7 @@ class VacanciesLanguages
      * Set vacancyTitle
      *
      * @param string $vacancyTitle
-     * @return VacanciesLanguages
+     * @return Descriptions
      */
     public function setVacancyTitle($vacancyTitle)
     {
@@ -111,7 +116,7 @@ class VacanciesLanguages
      * Set vacancyText
      *
      * @param string $vacancyText
-     * @return VacanciesLanguages
+     * @return Descriptions
      */
     public function setVacancyText($vacancyText)
     {
@@ -134,11 +139,11 @@ class VacanciesLanguages
      * Set vacancy
      *
      * @param \Application\Entity\Vacancies $vacancy
-     * @return VacanciesLanguages
+     * @return Descriptions
      */
     public function setVacancy(\Application\Entity\Vacancies $vacancy)
     {
-        $this->vacancy = $vacancy;
+        $this->vacancies = $vacancy;
 
         return $this;
     }
@@ -150,18 +155,28 @@ class VacanciesLanguages
      */
     public function getVacancy()
     {
-        return $this->vacancy;
+        return $this->vacancies;
+    }
+    
+    /**
+     * Get languageId
+     *
+     * @return string 
+     */
+    public function getLanguageId()
+    {
+        return $this->languageId;
     }
 
     /**
      * Set language
      *
      * @param \Application\Entity\Languages $language
-     * @return VacanciesLanguages
+     * @return Descriptions
      */
     public function setLanguage(\Application\Entity\Languages $language)
     {
-        $this->language = $language;
+        $this->languages = $language;
 
         return $this;
     }
@@ -173,6 +188,28 @@ class VacanciesLanguages
      */
     public function getLanguage()
     {
-        return $this->language;
+        return $this->languages;
+    }
+    
+    /**
+     * Convert the object to an array.
+     *
+     * @return array
+     */
+    public function getArrayCopy() 
+    {
+        return get_object_vars($this);
+    }
+    
+    /**
+     * Helper function.
+     */
+    public function exchangeArray($data)
+    {
+        foreach ($data as $key => $val) {
+            if (property_exists($this, $key)) {
+                $this->$key = ($val !== null) ? $val : null;
+            }
+        }
     }
 }

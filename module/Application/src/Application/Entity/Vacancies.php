@@ -3,6 +3,10 @@
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Zend\InputFilter\InputFilter;
+use Zend\InputFilter\Factory as InputFactory;
+use Zend\InputFilter\InputFilterAwareInterface;
+use Zend\InputFilter\InputFilterInterface;
 
 /**
  * Vacancies
@@ -10,7 +14,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="Vacancies")
  * @ORM\Entity
  */
-class Vacancies
+class Vacancies implements InputFilterAwareInterface
 {
     /**
      * @var integer
@@ -31,8 +35,8 @@ class Vacancies
     /**
      * @var \Doctrine\Common\Collections\Collection
      *
-     * @ORM\ManyToMany(targetEntity="Application\Entity\Departments", inversedBy="vacanciesVacancy")
-     * @ORM\JoinTable(name="vacancies_departments",
+     * @ORM\ManyToMany(targetEntity="Application\Entity\Departments", inversedBy="vacanciesVacancy", cascade={"persist"})
+     * @ORM\JoinTable(name="Vacancies_Departments",
      *   joinColumns={
      *     @ORM\JoinColumn(name="Vacancies_vacancy_id", referencedColumnName="vacancy_id")
      *   },
@@ -42,6 +46,28 @@ class Vacancies
      * )
      */
     private $departmentsDepartment;
+    
+    /**
+     * @ORM\OneToMany(targetEntity="\Application\Entity\Descriptions", mappedBy="vacancies", cascade={"persist"})
+     */
+    private $descriptions;
+    
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     *
+     * @ORM\ManyToMany(targetEntity="Application\Entity\Languages", inversedBy="vacancies", cascade={"persist"})
+     * @ORM\JoinTable(name="Descriptions",
+     *   joinColumns={
+     *     @ORM\JoinColumn(name="vacancy_id", referencedColumnName="vacancy_id")
+     *   },
+     *   inverseJoinColumns={
+     *     @ORM\JoinColumn(name="language_id", referencedColumnName="language_id")
+     *   }
+     * )
+     */
+    private $languages;
+    
+    private $inputFilter; 
 
     /**
      * Constructor
@@ -53,36 +79,90 @@ class Vacancies
 
 
     /**
-     * Get vacancyId
+     * Magic getter to expose protected properties.
      *
-     * @return integer 
+     * @param string $property
+     * @return mixed
      */
-    public function getVacancyId()
+    public function __get($property) 
     {
-        return $this->vacancyId;
+        return $this->$property;
     }
-
+  
     /**
-     * Set enabled
+     * Magic setter to save protected properties.
      *
-     * @param boolean $enabled
-     * @return Vacancies
+     * @param string $property
+     * @param mixed $value
      */
-    public function setEnabled($enabled)
+    public function __set($property, $value) 
     {
-        $this->enabled = $enabled;
-
-        return $this;
+        $this->$property = $value;
     }
-
+  
     /**
-     * Get enabled
+     * Convert the object to an array.
      *
-     * @return boolean 
+     * @return array
      */
-    public function getEnabled()
+    public function getArrayCopy() 
     {
-        return $this->enabled;
+        return get_object_vars($this);
+    }
+    
+    /**
+     * Helper function.
+     */
+    public function exchangeArray($data)
+    {
+        foreach ($data as $key => $val) {
+            if (property_exists($this, $key)) {
+                $this->$key = ($val !== null) ? $val : null;
+            }
+        }
+    }
+    
+    public function setInputFilter(InputFilterInterface $inputFilter)
+    {
+        throw new \Exception("Not used");
+    }
+    
+    public function getInputFilter()
+    {
+        if (!$this->inputFilter) {
+            $inputFilter = new InputFilter();
+ 
+            $inputFilter->add(array(
+                'name'     => 'vacancyId',
+                'required' => true,
+                'filters'  => array(
+                    array('name' => 'Int'),
+                ),
+            ));
+            
+            /*$inputFilter->add(array(
+                'name'     => 'title',
+                'required' => true,
+                'filters'  => array(
+                    array('name' => 'StripTags'),
+                    array('name' => 'StringTrim'),
+                ),
+                'validators' => array(
+                    array(
+                        'name'    => 'StringLength',
+                        'options' => array(
+                            'encoding' => 'UTF-8',
+                            'min'      => 1,
+                            'max'      => 100,
+                        ),
+                    ),
+                ),
+            ));*/
+ 
+            $this->inputFilter = $inputFilter;
+        }
+ 
+        return $this->inputFilter;
     }
 
     /**
@@ -91,9 +171,9 @@ class Vacancies
      * @param \Application\Entity\Departments $departmentsDepartment
      * @return Vacancies
      */
-    public function addDepartmentsDepartment(\Application\Entity\Departments $departmentsDepartment)
+    public function addDepartments(\Application\Entity\Departments $departments)
     {
-        $this->departmentsDepartment[] = $departmentsDepartment;
+        $this->departmentsDepartment[] = $departments;
 
         return $this;
     }
@@ -103,9 +183,9 @@ class Vacancies
      *
      * @param \Application\Entity\Departments $departmentsDepartment
      */
-    public function removeDepartmentsDepartment(\Application\Entity\Departments $departmentsDepartment)
+    public function removeDepartments(\Application\Entity\Departments $departments)
     {
-        $this->departmentsDepartment->removeElement($departmentsDepartment);
+        $this->departmentsDepartment->removeElement($departments);
     }
 
     /**
@@ -113,8 +193,20 @@ class Vacancies
      *
      * @return \Doctrine\Common\Collections\Collection 
      */
-    public function getDepartmentsDepartment()
+    public function getDepartments()
     {
         return $this->departmentsDepartment;
+    }
+    
+    /**
+     * Clear departmentsDepartment
+     *
+     * @return Vacancies 
+     */
+    public function clear()
+    {
+        $this->departmentsDepartment = new \Doctrine\Common\Collections\ArrayCollection();
+        
+        return $this;
     }
 }

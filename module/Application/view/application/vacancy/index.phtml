@@ -1,0 +1,36 @@
+<?php
+$title = 'List vacancy';
+$this->headTitle($title);
+print $this->showMessages();
+?>
+<h1><?php echo $this->escapeHtml($title); ?></h1>
+<table class="table">
+    <thead>
+        <tr>
+            <th>VacancyId</th>
+            <th>Title</th>
+            <th>Language</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+<?php
+$rows = $this->vacancies;
+foreach($rows as $row):
+?>
+        <tr>
+            <td><?= $row->vacancyId?></td>
+            <td><?= implode('<br>', $row->descriptions->map(function($entity){return $entity->getVacancyTitle();})->toArray())?></td>
+            <td><?= implode('<br>', $row->languages->map(function($entity){return $entity->getTitle();})->toArray())?></td>
+            <td>
+                <a href="<?= $this->url('vacancy', array('action' => 'edit', 'id' => $row->vacancyId))?>">
+                <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                </a>
+                <a href="<?= $this->url('vacancy', array('action' => 'delete', 'id' => $row->vacancyId))?>">
+                <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                </a>
+            </td>
+        </tr>
+<?php endforeach?>
+    </tbody>
+</table>

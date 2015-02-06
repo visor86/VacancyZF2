@@ -36,9 +36,9 @@ class Departments implements InputFilterAwareInterface
     /**
      * @var \Doctrine\Common\Collections\Collection
      *
-     * @ORM\ManyToMany(targetEntity="Application\Entity\Vacancies", mappedBy="departmentsDepartment")
+     * @ORM\ManyToMany(targetEntity="Application\Entity\Vacancies", mappedBy="departmentsDepartment", cascade={"persist"})
      */
-    private $vacancies;
+    private $vacanciesVacancy;
 
     /**
      * Constructor
@@ -90,7 +90,7 @@ class Departments implements InputFilterAwareInterface
      */
     public function addVacancy(\Application\Entity\Vacancies $vacancies)
     {
-        $this->vacancies[] = $vacancies;
+        $this->vacanciesVacancy[] = $vacancies;
 
         return $this;
     }
@@ -102,7 +102,7 @@ class Departments implements InputFilterAwareInterface
      */
     public function removeVacancy(\Application\Entity\Vacancies $vacancies)
     {
-        $this->vacancies->removeElement($vacancies);
+        $this->vacanciesVacancy->removeElement($vacancies);
     }
 
     /**
@@ -170,7 +170,7 @@ class Departments implements InputFilterAwareInterface
             $inputFilter = new InputFilter();
  
             $inputFilter->add(array(
-                'name'     => 'departmentId',
+                'name'     => 'departmentd',
                 'required' => true,
                 'filters'  => array(
                     array('name' => 'Int'),

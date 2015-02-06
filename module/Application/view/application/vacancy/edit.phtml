@@ -1,0 +1,37 @@
+<?php
+$title = 'Edit vacancy';
+$this->headTitle($title);
+print $this->showMessages();
+?>
+    <h1><?php echo $this->escapeHtml($title); ?></h1>
+<?php
+$form = $this->form;
+$form->setAttribute('action', $this->url('vacancy', array('controller' => 'vacancy' , 'action' => 'edit', 'id' => $this->id)));
+$form->prepare();
+echo $this->form()->openTag($form);
+echo $this->formHidden($form->get('vacancyId'));
+?>
+<div class="form-group"><?= $this->formRow($form->get('departmentsDepartment'))?></div>
+<div class="checkbox"><?= $this->formRow($form->get('enabled'))?></div>
+<?php foreach($languages as $row):?>
+<div class="panel panel-default">
+    <div class="panel-heading"><?= $row->title?></div>
+    <div class="panel-body">
+        <?= $this->formHidden($form->get("id[{$row->languageId}]"))?>
+        <div class="form-group"><?= $this->formRow($form->get("title[{$row->languageId}]"))?></div>
+        <div class="form-group"><?= $this->formRow($form->get("text[{$row->languageId}]"))?></div>
+    </div>
+</div>
+<?php endforeach?>
+<div class="form-group"><?= $this->formSubmit($form->get('submit'))?></div>
+<?php
+echo $this->form()->closeTag();
+?>
+<script type="text/javascript">
+    $(function(){
+       $('.panel-body:not(:first)').hide();
+       $('.panel-heading').click(function(){
+          $(this).next('.panel-body').slideToggle(); 
+       });
+    });
+</script>
