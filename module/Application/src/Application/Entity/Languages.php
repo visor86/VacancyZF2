@@ -37,13 +37,6 @@ class Languages implements InputFilterAwareInterface
      */
     private $descriptions; 
     
-    /**
-     * @var \Doctrine\Common\Collections\Collection
-     *
-     * @ORM\ManyToMany(targetEntity="Application\Entity\Vacancies", mappedBy="languages", cascade={"persist"})
-     */
-    private $vacancies;
-    
     private $inputFilter;
 
     /**

@@ -73,7 +73,7 @@ Set access to database
 
 ### Migration
     cd my/project/dir/vendor/bin/
-    doctrine-module orm:info
-    doctrine-module orm:validate-schema
-    doctrine-module orm:schema-tool:update --force
+    ./doctrine-module orm:info
+    ./doctrine-module orm:validate-schema
+    ./doctrine-module orm:schema-tool:update --force
     	

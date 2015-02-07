@@ -52,21 +52,6 @@ class Vacancies implements InputFilterAwareInterface
      */
     private $descriptions;
     
-    /**
-     * @var \Doctrine\Common\Collections\Collection
-     *
-     * @ORM\ManyToMany(targetEntity="Application\Entity\Languages", inversedBy="vacancies", cascade={"persist"})
-     * @ORM\JoinTable(name="DescriptionsVacancy",
-     *   joinColumns={
-     *     @ORM\JoinColumn(name="vacancy_id", referencedColumnName="vacancy_id")
-     *   },
-     *   inverseJoinColumns={
-     *     @ORM\JoinColumn(name="language_id", referencedColumnName="language_id")
-     *   }
-     * )
-     */
-    private $languages;
-    
     private $inputFilter; 
 
     /**
@@ -238,6 +223,35 @@ class Vacancies implements InputFilterAwareInterface
         return $this;
     }
     
+    /**
+     * Get Title Languages for current vacancy
+     * 
+     * @return \Doctrine\Common\Collections\ArrayCollection 
+     */
+    public function getLanguagesTitleForVacancy() {
+        return $this->descriptions->map(function($entity){
+            return $entity->getLanguage()->getTitle(); 
+        });
+    }
+    
+    /**
+     * Get translate for current vacancy
+     * 
+     * @return \Doctrine\Common\Collections\ArrayCollection
+     */
+    public function getTitlesForVacancy() {
+        return $this->descriptions->map(function($entity){
+           return $entity->getVacancyTitle(); 
+        });
+    }
+    
+    /**
+     * Get all vacancies match the filter
+     * 
+     * @param \Doctrine\ORM\EntityManager $em
+     * @param array $filter
+     * @return array
+     */
     public function getVacanciesAll(\Doctrine\ORM\EntityManager $em, $filter = array()) {
         $idLanguage = 1;
         $qb = $em->createQueryBuilder();
@@ -274,6 +288,13 @@ class Vacancies implements InputFilterAwareInterface
         return $result;
     }
     
+    /**
+     * 
+     * Get all departments for vacancies
+     * 
+     * @param \Doctrine\ORM\EntityManager $em
+     * @return array
+     */
     public function getDepartnetsForVacancies(\Doctrine\ORM\EntityManager $em) {
         $qb = $em->createQueryBuilder();
         $qb->select('d')
@@ -286,6 +307,13 @@ class Vacancies implements InputFilterAwareInterface
         return $query->getArrayResult();
     }
     
+    /**
+     * 
+     * Get all languages for vacancies
+     * 
+     * @param \Doctrine\ORM\EntityManager $em
+     * @return array
+     */
     public function getLanguagesForVacancies(\Doctrine\ORM\EntityManager $em) {
         $qb = $em->createQueryBuilder();
         $qb->select('l')
