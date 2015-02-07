@@ -224,6 +224,14 @@ class Vacancies implements InputFilterAwareInterface
         
         return $this;
     }
+    /**
+     * Get descriptions
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getDescriptions() {
+        return $this->descriptions;
+    }
     
     /**
      * Get Title Languages for current vacancy

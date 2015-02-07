@@ -111,12 +111,13 @@ class VacancyController extends BaseController
         foreach ($languages as $language) {
             $form->setDescriptions($language->languageId);
         }
-        
-        $descriptions = $vacancy->descriptions->map(function($row) use (&$form) {
-            $form->get("id[{$row->getLanguageId()}]")->setAttribute("value", $row->getId());
-            $form->get("title_{$row->getLanguageId()}")->setAttribute("value", $row->getVacancyTitle());
-            $form->get("text_{$row->getLanguageId()}")->setAttribute("value", $row->getVacancyText());
-        });
+        if($vacancy->getDescriptions() instanceof \Doctrine\Common\Collections\Collection) {
+            $descriptions = $vacancy->getDescriptions()->map(function($row) use (&$form) {
+                $form->get("id[{$row->getLanguageId()}]")->setAttribute("value", $row->getId());
+                $form->get("title_{$row->getLanguageId()}")->setAttribute("value", $row->getVacancyTitle());
+                $form->get("text_{$row->getLanguageId()}")->setAttribute("value", $row->getVacancyText());
+            });
+        }
         
         $form->bind($vacancy);
         
