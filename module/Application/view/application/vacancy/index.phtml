@@ -3,7 +3,7 @@ $title = 'List vacancy';
 $this->headTitle($title);
 print $this->showMessages();
 ?>
-<h1><?php echo $this->escapeHtml($title); ?></h1>
+<h1><?php echo $this->escapeHtml($title); ?> <a class="btn btn-default" href="<?= $this->url('vacancy', array('action' => 'add'))?>" role="button">Add</a></h1>
 <table class="table">
     <thead>
         <tr>

@@ -1,0 +1,12 @@
+CREATE TABLE Languages (language_id INT AUTO_INCREMENT NOT NULL, title VARCHAR(45) DEFAULT NULL, PRIMARY KEY(language_id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB;
+CREATE TABLE Departments (department_id INT AUTO_INCREMENT NOT NULL, title VARCHAR(255) DEFAULT NULL, PRIMARY KEY(department_id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB;
+CREATE TABLE DescriptionsVacancy (id INT AUTO_INCREMENT NOT NULL, vacancy_id INT DEFAULT NULL, language_id INT NOT NULL, vacancy_title VARCHAR(255) DEFAULT NULL, vacancy_text LONGTEXT DEFAULT NULL, INDEX IDX_DF94191433B78C4 (vacancy_id), INDEX IDX_DF9419182F1BAF4 (language_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB;
+CREATE TABLE Vacancies (vacancy_id INT AUTO_INCREMENT NOT NULL, enabled TINYINT(1) DEFAULT NULL, PRIMARY KEY(vacancy_id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB;
+CREATE TABLE Vacancies_Departments (Vacancies_vacancy_id INT NOT NULL, Departments_department_id INT NOT NULL, INDEX IDX_2E0240D2785CB9B6 (Vacancies_vacancy_id), INDEX IDX_2E0240D226BE2292 (Departments_department_id), PRIMARY KEY(Vacancies_vacancy_id, Departments_department_id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB;
+CREATE TABLE Descriptions (vacancy_id INT NOT NULL, language_id INT NOT NULL, INDEX IDX_D15F754E433B78C4 (vacancy_id), INDEX IDX_D15F754E82F1BAF4 (language_id), PRIMARY KEY(vacancy_id, language_id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB;
+ALTER TABLE DescriptionsVacancy ADD CONSTRAINT FK_DF94191433B78C4 FOREIGN KEY (vacancy_id) REFERENCES Vacancies (vacancy_id);
+ALTER TABLE DescriptionsVacancy ADD CONSTRAINT FK_DF9419182F1BAF4 FOREIGN KEY (language_id) REFERENCES Languages (language_id);
+ALTER TABLE Vacancies_Departments ADD CONSTRAINT FK_2E0240D2785CB9B6 FOREIGN KEY (Vacancies_vacancy_id) REFERENCES Vacancies (vacancy_id);
+ALTER TABLE Vacancies_Departments ADD CONSTRAINT FK_2E0240D226BE2292 FOREIGN KEY (Departments_department_id) REFERENCES Departments (department_id);
+ALTER TABLE Descriptions ADD CONSTRAINT FK_D15F754E433B78C4 FOREIGN KEY (vacancy_id) REFERENCES Vacancies (vacancy_id);
+ALTER TABLE Descriptions ADD CONSTRAINT FK_D15F754E82F1BAF4 FOREIGN KEY (language_id) REFERENCES Languages (language_id);

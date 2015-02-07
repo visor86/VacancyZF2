@@ -32,6 +32,8 @@ class Departments implements InputFilterAwareInterface
      * @ORM\Column(name="title", type="string", length=255, nullable=true)
      */
     private $title;
+    
+    private $inputFilter;
 
     /**
      * @var \Doctrine\Common\Collections\Collection
@@ -170,7 +172,7 @@ class Departments implements InputFilterAwareInterface
             $inputFilter = new InputFilter();
  
             $inputFilter->add(array(
-                'name'     => 'departmentd',
+                'name'     => 'departmentId',
                 'required' => true,
                 'filters'  => array(
                     array('name' => 'Int'),

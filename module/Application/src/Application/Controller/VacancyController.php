@@ -2,13 +2,11 @@
 
 namespace Application\Controller;
 
-use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Application\Entity;
 
-class VacancyController extends AbstractActionController
+class VacancyController extends BaseController
 {
-    protected $_objectManager;
     
     public function indexAction()
     {
@@ -44,40 +42,36 @@ class VacancyController extends AbstractActionController
             
             $form->setInputFilter($vacancy->getInputFilter());
             $form->setData($request->getPost());
-            
             if ($form->isValid()) {
-                $vacancy->enabled = $request->getPost('enabled');
-                $arTitle = $request->getPost('title');
-                $arText = $request->getPost('text');
-                
-                foreach ($arTitle as $id => $value) {
-                    if (!empty($value)) {
-                        $language = $objectManager->find('\Application\Entity\Languages', (int) $id);
-                        $description = new \Application\Entity\Descriptions();
-                        $description->setVacancyText($arText[$id]);
-                        $description->setVacancyTitle($arTitle[$id]);
-                        $description->setVacancy($vacancy);
-                        $description->setLanguage($language);
-                        $objectManager->persist($description);
-                    }
-                }
-
-                $departments = $objectManager->getRepository('\Application\Entity\Departments')
-                    ->findBy(array('departmentId' => $request->getPost('departmentsDepartment')));
-                $vacancy->getDepartments();
-                foreach ($departments as $department) {
-                    $vacancy->addDepartments($department);
-                }
-                
+                $vacancy->enabled = $languages;
                 try {
+                    foreach ($languages as $language) {
+                        if (!empty($request->getPost("title_{$language->languageId}"))) {
+                            $description = new \Application\Entity\Descriptions();
+                            $description->setVacancyText($request->getPost("text_{$language->languageId}"));
+                            $description->setVacancyTitle($request->getPost("title_{$language->languageId}"));
+                            $description->setVacancy($vacancy);
+                            $description->setLanguage($language);
+                            $objectManager->persist($description);
+                        }
+                    }
+
+                    $departments = $objectManager->getRepository('\Application\Entity\Departments')
+                        ->findBy(array('departmentId' => $request->getPost('departmentsDepartment')));
+                    $vacancy->getDepartments();
+                    foreach ($departments as $department) {
+                        $vacancy->addDepartments($department);
+                    }
+    
                     $objectManager->flush();
+                    
+                    return $this->redirect()->toRoute('vacancy');
                 } catch (\Exception $e) {
                     $this->flashMessenger()->addErrorMessage($e->getMessage());
                 }
                 
-                return $this->redirect()->toRoute('vacancy');
             } else {
-                $message = 'Error while saving language';
+                $message = 'Error while saving Vacancy';
                 $this->flashMessenger()->addErrorMessage($message);
             }
         }
@@ -113,8 +107,8 @@ class VacancyController extends AbstractActionController
         
         $descriptions = $vacancy->descriptions->map(function($row) use (&$form) {
             $form->get("id[{$row->getLanguageId()}]")->setAttribute("value", $row->getId());
-            $form->get("title[{$row->getLanguageId()}]")->setAttribute("value", $row->getVacancyTitle());
-            $form->get("text[{$row->getLanguageId()}]")->setAttribute("value", $row->getVacancyText());
+            $form->get("title_{$row->getLanguageId()}")->setAttribute("value", $row->getVacancyTitle());
+            $form->get("text_{$row->getLanguageId()}")->setAttribute("value", $row->getVacancyText());
         });
         
         $form->bind($vacancy);
@@ -130,21 +124,19 @@ class VacancyController extends AbstractActionController
             if ($form->isValid()) {
                 try {
                     $vacancy->enabled = $request->getPost('enabled');
-                    $arTitle = $request->getPost('title');
-                    $arText = $request->getPost('text');
                     $arId = $request->getPost('id');
-                    foreach ($arTitle as $languageId => $value) {
-                        if (!empty($value)) {
+                    foreach ($languages as $language) {
+                        $languageId = $language->languageId;
+                        if (!empty($request->getPost("title_{$languageId}"))) {
                             if (!empty($arId[$languageId])) {
                                 $description = $objectManager->find('\Application\Entity\Descriptions', (int) $arId[$languageId]);
                             } else {
                                 $description = new \Application\Entity\Descriptions();
-                                $language = $objectManager->find('\Application\Entity\Languages', (int) $languageId);
                                 $description->setLanguage($language);
                                 $description->setVacancy($vacancy);
                             }
-                            $description->setVacancyText($arText[$languageId]);
-                            $description->setVacancyTitle($arTitle[$languageId]);
+                            $description->setVacancyText($request->getPost("text_{$languageId}"));
+                            $description->setVacancyTitle($request->getPost("title_{$languageId}"));
                             if (empty($arId[$languageId])) {
                                 $objectManager->merge($description);
                             }
@@ -170,6 +162,9 @@ class VacancyController extends AbstractActionController
                 }
                 
                return $this->redirect()->toRoute('vacancy', array('controller' => 'vacancy' , 'action' => 'edit', 'id' => $id));
+            } else {
+                $message = 'Error while saving Vacancy';
+                $this->flashMessenger()->addErrorMessage($message);
             }
         }
         return array('form' => $form, 'id' => $id, 'vacancy' => $vacancy, 'languages' => $languages);
@@ -185,8 +180,8 @@ class VacancyController extends AbstractActionController
         $objectManager = $this->getObjectManager();
         $vacancy = $objectManager->find('\Application\Entity\Vacancies', $id);
         if($vacancy) {
-            $objectManager->remove($vacancy);
             try {
+                $objectManager->remove($vacancy);
                 $objectManager->flush();
             } catch (\Exception $e) {
                 $this->flashMessenger()->addErrorMessage($e->getMessage());
@@ -194,14 +189,6 @@ class VacancyController extends AbstractActionController
         }
         
         return $this->redirect()->toRoute('vacancy');
-    }
-    
-    protected function getObjectManager()
-    {
-        if (!$this->_objectManager) {
-            $this->_objectManager = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
-        }
-        return $this->_objectManager;
     }
 }
 

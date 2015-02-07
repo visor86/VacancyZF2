@@ -2,13 +2,11 @@
 
 namespace Application\Controller;
 
-use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Application\Entity;
 
-class LanguagesController extends AbstractActionController
+class LanguagesController extends BaseController
 {
-    protected $_objectManager;
     
     public function indexAction() {
         $objectManager = $this->getObjectManager();
@@ -37,11 +35,14 @@ class LanguagesController extends AbstractActionController
                 $objectManager = $this->getObjectManager();
                 
                 $language->exchangeArray($form->getData());
+                try {
+                    $objectManager->persist($language);
+                    $objectManager->flush();
                 
-                $objectManager->persist($language);
-                $objectManager->flush();
-                
-                return $this->redirect()->toRoute('languages');
+                    return $this->redirect()->toRoute('languages');
+                } catch (\Exception $e) {
+                    $this->flashMessenger()->addErrorMessage($e->getMessage());
+                }
             } else {
                 $message = 'Error while saving language';
                 $this->flashMessenger()->addErrorMessage($message);
@@ -79,9 +80,16 @@ class LanguagesController extends AbstractActionController
             $form->setData($request->getPost());
             
             if ($form->isValid()) {
-                $objectManager->flush();
+                try {
+                    $objectManager->flush();
                 
-                return $this->redirect()->toRoute('languages');
+                    return $this->redirect()->toRoute('languages');
+                } catch (\Exception $e) {
+                    $this->flashMessenger()->addErrorMessage($e->getMessage());
+                }
+            } else {
+                $message = 'Error while saving language';
+                $this->flashMessenger()->addErrorMessage($message);
             }
         }
         return array('form' => $form, 'id' => $id, 'language' => $language);
@@ -96,19 +104,15 @@ class LanguagesController extends AbstractActionController
         $objectManager = $this->getObjectManager();
         $language = $objectManager->find('\Application\Entity\Languages', $id);
         if($language) {
-            $objectManager->remove($language);
-            $objectManager->flush();
+            try {
+                $objectManager->remove($language);
+                $objectManager->flush();
+            } catch (\Exception $e) {
+                $this->flashMessenger()->addErrorMessage($e->getMessage());
+            }
         }
         
         return $this->redirect()->toRoute('languages');
-    }
-    
-    protected function getObjectManager()
-    {
-        if (!$this->_objectManager) {
-            $this->_objectManager = $this->getServiceLocator()->get('Doctrine\ORM\EntityManager');
-        }
-        return $this->_objectManager;
     }
 }
 

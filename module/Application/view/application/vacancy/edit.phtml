@@ -11,15 +11,15 @@ $form->prepare();
 echo $this->form()->openTag($form);
 echo $this->formHidden($form->get('vacancyId'));
 ?>
-<div class="form-group"><?= $this->formRow($form->get('departmentsDepartment'))?></div>
+<div class="form-group departments"><?= $this->formRow($form->get('departmentsDepartment'))?></div>
 <div class="checkbox"><?= $this->formRow($form->get('enabled'))?></div>
 <?php foreach($languages as $row):?>
 <div class="panel panel-default">
     <div class="panel-heading"><?= $row->title?></div>
     <div class="panel-body">
         <?= $this->formHidden($form->get("id[{$row->languageId}]"))?>
-        <div class="form-group"><?= $this->formRow($form->get("title[{$row->languageId}]"))?></div>
-        <div class="form-group"><?= $this->formRow($form->get("text[{$row->languageId}]"))?></div>
+        <div class="form-group"><?= $this->formRow($form->get("title_{$row->languageId}"))?></div>
+        <div class="form-group"><?= $this->formRow($form->get("text_{$row->languageId}"))?></div>
     </div>
 </div>
 <?php endforeach?>

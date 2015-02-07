@@ -22,28 +22,13 @@ Alternately, clone the repository and manually invoke `composer` using the shipp
 `composer.phar`:
 
     cd my/project/dir
-    git clone git://github.com/zendframework/ZendSkeletonApplication.git
-    cd ZendSkeletonApplication
+    git clone git://github.com/visor86/VacancyZF2.git
+    cd VacancyZF2
     php composer.phar self-update
     php composer.phar install
 
 (The `self-update` directive is to ensure you have an up-to-date `composer.phar`
 available.)
-
-Another alternative for downloading the project is to grab it via `curl`, and
-then pass it to `tar`:
-
-    cd my/project/dir
-    curl -#L https://github.com/zendframework/ZendSkeletonApplication/tarball/master | tar xz --strip-components=1
-
-You would then invoke `composer` to install dependencies per the previous
-example.
-
-Using Git submodules
---------------------
-Alternatively, you can install using native git submodules:
-
-    git clone git://github.com/zendframework/ZendSkeletonApplication.git --recursive
 
 Web Server Setup
 ----------------
@@ -75,3 +60,20 @@ project and you should be ready to go! It should look something like below:
             Allow from all
         </Directory>
     </VirtualHost>
+
+Configuration
+----------------
+
+### Connect database
+
+    cd my/project/dir/config/autoload/
+    file tdoctrine.global.php
+
+Set access to database
+
+### Migration
+    cd my/project/dir/vendor/bin/
+    doctrine-module orm:info
+    doctrine-module orm:validate-schema
+    doctrine-module orm:schema-tool:update --force
+    	

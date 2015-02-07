@@ -46,11 +46,10 @@ class VacancyForm extends Form implements ObjectManagerAwareInterface
                 'options' => array(
                     'object_manager' => $entityManager,
                     'target_class'   => 'Application\Entity\Departments',
-                    'label' => 'Departments',
                     'property' => 'title',
                 ),
                 'attributes' => array(
-                    'class' => "form-control"
+                    'class' => ""
                 )
             )
         );
@@ -71,7 +70,7 @@ class VacancyForm extends Form implements ObjectManagerAwareInterface
         ));
                 
         $this->add(array(
-            'name' => "title[{$langId}]",
+            'name' => "title_{$langId}",
             'type' => 'text',
             'options' => array(
                 'label' => "Title"
@@ -83,7 +82,7 @@ class VacancyForm extends Form implements ObjectManagerAwareInterface
         ));
         
         $this->add(array(
-            'name' => "text[{$langId}]",
+            'name' => "text_{$langId}",
             'type' => 'Textarea',
             'options' => array(
                 'label' => "Text"

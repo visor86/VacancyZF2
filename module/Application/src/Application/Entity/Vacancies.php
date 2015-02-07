@@ -56,7 +56,7 @@ class Vacancies implements InputFilterAwareInterface
      * @var \Doctrine\Common\Collections\Collection
      *
      * @ORM\ManyToMany(targetEntity="Application\Entity\Languages", inversedBy="vacancies", cascade={"persist"})
-     * @ORM\JoinTable(name="Descriptions",
+     * @ORM\JoinTable(name="DescriptionsVacancy",
      *   joinColumns={
      *     @ORM\JoinColumn(name="vacancy_id", referencedColumnName="vacancy_id")
      *   },
@@ -140,8 +140,8 @@ class Vacancies implements InputFilterAwareInterface
                 ),
             ));
             
-            /*$inputFilter->add(array(
-                'name'     => 'title',
+            $inputFilter->add(array(
+                'name'     => 'title_1',
                 'required' => true,
                 'filters'  => array(
                     array('name' => 'StripTags'),
@@ -157,7 +157,25 @@ class Vacancies implements InputFilterAwareInterface
                         ),
                     ),
                 ),
-            ));*/
+            ));
+            
+            $inputFilter->add(array(
+                'name'     => 'text_1',
+                'required' => true,
+                'filters'  => array(
+                    array('name' => 'StripTags'),
+                    array('name' => 'StringTrim'),
+                ),
+                'validators' => array(
+                    array(
+                        'name'    => 'StringLength',
+                        'options' => array(
+                            'encoding' => 'UTF-8',
+                            'min'      => 1,
+                        ),
+                    ),
+                ),
+            ));
  
             $this->inputFilter = $inputFilter;
         }
@@ -196,6 +214,16 @@ class Vacancies implements InputFilterAwareInterface
     public function getDepartments()
     {
         return $this->departmentsDepartment;
+    }
+    
+    /**
+     * Get languages
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getLanguages()
+    {
+        return $this->languages;
     }
     
     /**

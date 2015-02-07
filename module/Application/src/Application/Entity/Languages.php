@@ -43,6 +43,8 @@ class Languages implements InputFilterAwareInterface
      * @ORM\ManyToMany(targetEntity="Application\Entity\Vacancies", mappedBy="languages", cascade={"persist"})
      */
     private $vacancies;
+    
+    private $inputFilter;
 
     /**
      * Set title
