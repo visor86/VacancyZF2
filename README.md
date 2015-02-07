@@ -67,7 +67,7 @@ Configuration
 ### Connect database
 
     cd my/project/dir/config/autoload/
-    file tdoctrine.global.php
+    file doctrine.global.php
 
 Set access to database
 
