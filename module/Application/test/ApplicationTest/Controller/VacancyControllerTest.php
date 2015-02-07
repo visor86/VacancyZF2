@@ -55,14 +55,11 @@ class VacancyControllerTest extends PHPUnit_Framework_TestCase
         $this->routeMatch->setParam('action', 'add');
         
         $postData = array(
-            'departmentsDepartment' => array(1, 3),
+            'departmentsDepartment' => array(1),
             'vacancyId' => '',
             'enabled' => 1,
-            'title_1' => 'Vacancy test title for language EN',
-            'id' => array(1 => 1, 2 => 2),
-            'title_2' => 'Vacancy test title for language RU',
-            'text_1' => 'Vacancy test text for language EN',
-            'text_2' => 'Vacancy test text for language RU',
+            "title_{$this->getConfig()->language_default}" => 'Vacancy test title for language EN',
+            "text_{$this->getConfig()->language_default}" => 'Vacancy test text for language EN',
             'submit' => 'Add'
         );
         
@@ -83,14 +80,12 @@ class VacancyControllerTest extends PHPUnit_Framework_TestCase
         $this->routeMatch->setParam('id', '1');
         
         $postData = array(
-            'departmentsDepartment' => array(1, 3),
+            'departmentsDepartment' => array(1),
             'vacancyId' => 1,
             'enabled' => 1,
-            'title_1' => 'Vacancy test title for language EN',
-            'id' => array(1 => 1, 2 => 2),
-            'title_2' => 'Vacancy test title for language RU',
-            'text_1' => 'Vacancy test text for language EN',
-            'text_2' => 'Vacancy test text for language RU',
+            "title_{$this->getConfig()->language_default}" => 'Vacancy test title for language EN',
+            "text_{$this->getConfig()->language_default}" => 'Vacancy test text for language EN',
+            'id' => array($this->getConfig()->language_default => 1),
             'submit' => 'Save'
             
         );
@@ -108,12 +103,22 @@ class VacancyControllerTest extends PHPUnit_Framework_TestCase
     public function testDeleteActionCanBeAccessed()
     {
         $this->routeMatch->setParam('action', 'delete');
-        $this->routeMatch->setParam('id', '2');
+        $this->routeMatch->setParam('id', '1');
         
         $result   = $this->controller->dispatch($this->request);
         $response = $this->controller->getResponse();
         
         $this->assertEquals(302, $response->getStatusCode());
+        // Delete test department
+        $department = new DepartmentControllerTest();
+        $department->deleteActionCanBeAccessed();
+        // Delete test language
+        $language = new LanguageControllerTest();
+        $language->deleteActionCanBeAccessed();
+    }
+    
+    public function getConfig() {
+        return new \Zend\Config\Config(include __DIR__ . '/../../../config/config.php');
     }
 
     

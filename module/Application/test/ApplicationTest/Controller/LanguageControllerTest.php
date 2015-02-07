@@ -77,10 +77,12 @@ class LanguageControllerTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(302, $response->getStatusCode());
     }
 
-    public function testDeleteActionCanBeAccessed()
+    public function deleteActionCanBeAccessed()
     {
+        $this->setUp();
+        
         $this->routeMatch->setParam('action', 'delete');
-        $this->routeMatch->setParam('id', '3');
+        $this->routeMatch->setParam('id', '1');
         
         $result   = $this->controller->dispatch($this->request);
         $response = $this->controller->getResponse();

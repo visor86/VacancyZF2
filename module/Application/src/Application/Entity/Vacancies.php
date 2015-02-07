@@ -114,9 +114,11 @@ class Vacancies implements InputFilterAwareInterface
     
     public function getInputFilter()
     {
+        $idLanguage = $this->getConfig()->language_default;
+        
         if (!$this->inputFilter) {
             $inputFilter = new InputFilter();
- 
+            
             $inputFilter->add(array(
                 'name'     => 'vacancyId',
                 'required' => true,
@@ -126,7 +128,7 @@ class Vacancies implements InputFilterAwareInterface
             ));
             
             $inputFilter->add(array(
-                'name'     => 'title_1',
+                'name'     => 'title_'.$idLanguage,
                 'required' => true,
                 'filters'  => array(
                     array('name' => 'StripTags'),
@@ -145,7 +147,7 @@ class Vacancies implements InputFilterAwareInterface
             ));
             
             $inputFilter->add(array(
-                'name'     => 'text_1',
+                'name'     => 'text_'.$idLanguage,
                 'required' => true,
                 'filters'  => array(
                     array('name' => 'StripTags'),
@@ -253,7 +255,7 @@ class Vacancies implements InputFilterAwareInterface
      * @return array
      */
     public function getVacanciesAll(\Doctrine\ORM\EntityManager $em, $filter = array()) {
-        $idLanguage = 1;
+        $idLanguage = $this->getConfig()->language_default;
         $qb = $em->createQueryBuilder();
         $qb->select('d, v')
             ->from('Application\Entity\Descriptions', 'd')
@@ -324,5 +326,9 @@ class Vacancies implements InputFilterAwareInterface
         $query = $qb->getQuery();
         $query->useResultCache(TRUE);
         return $query->getArrayResult();
+    }
+    
+    public function getConfig() {
+        return new \Zend\Config\Config(include __DIR__ . '/../../../config/config.php');
     }
 }

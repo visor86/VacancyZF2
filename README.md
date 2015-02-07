@@ -76,4 +76,7 @@ Set access to database
     ./doctrine-module orm:info
     ./doctrine-module orm:validate-schema
     ./doctrine-module orm:schema-tool:update --force
+
+### Default language
+    module/Application/config/config.php
     	

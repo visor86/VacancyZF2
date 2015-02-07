@@ -72,15 +72,16 @@ class DepartmentControllerTest extends PHPUnit_Framework_TestCase
 
         $this->controller->dispatch($this->request);
         $response = $this->controller->getResponse();
-        fwrite(STDERR, print_r($this->routeMatch, TRUE));
         
         $this->assertEquals(302, $response->getStatusCode());
     }
 
-    public function testDeleteActionCanBeAccessed()
+    public function deleteActionCanBeAccessed()
     {
+        $this->setUp();
+        
         $this->routeMatch->setParam('action', 'delete');
-        $this->routeMatch->setParam('id', '2');
+        $this->routeMatch->setParam('id', '1');
         
         $result   = $this->controller->dispatch($this->request);
         $response = $this->controller->getResponse();

@@ -16,7 +16,7 @@ echo $this->formHidden($form->get('vacancyId'));
 <?php foreach($languages as $row):?>
 <div class="panel panel-default">
     <div class="panel-heading"><?= $row->title?></div>
-    <div class="panel-body">
+    <div class="panel-body" id="block<?= $row->languageId?>">
         <?= $this->formHidden($form->get("id[{$row->languageId}]"))?>
         <div class="form-group"><?= $this->formRow($form->get("title_{$row->languageId}"))?></div>
         <div class="form-group"><?= $this->formRow($form->get("text_{$row->languageId}"))?></div>
@@ -29,7 +29,7 @@ echo $this->form()->closeTag();
 ?>
 <script type="text/javascript">
     $(function(){
-       $('.panel-body:not(:first)').hide();
+       $(".panel-body:not([id='block<?= $this->defLang?>'])").hide();
        $('.panel-heading').click(function(){
           $(this).next('.panel-body').slideToggle(); 
        });

@@ -24,6 +24,7 @@ class VacancyController extends BaseController
     {
         $objectManager = $this->getObjectManager();
         
+        $model = new \Application\Entity\Vacancies();
         $form = new \Application\Form\VacancyForm('vacancies', $objectManager);
         
         $form->setObjectManager($objectManager);
@@ -76,7 +77,11 @@ class VacancyController extends BaseController
                 $this->flashMessenger()->addErrorMessage($message);
             }
         }
-        return array('form' => $form, 'languages' => $languages);
+        return array(
+            'form' => $form, 
+            'languages' => $languages, 
+            'defLang' => $model->getConfig()->language_default
+        );
     }
     
     public function editAction()
@@ -90,6 +95,7 @@ class VacancyController extends BaseController
             return $this->redirect()->toRoute('vacancy');
         }
         
+        $model = new \Application\Entity\Vacancies();
         $form = new \Application\Form\VacancyForm('vacancy', $objectManager);
         
         $form->setObjectManager($objectManager);
@@ -168,7 +174,13 @@ class VacancyController extends BaseController
                 $this->flashMessenger()->addErrorMessage($message);
             }
         }
-        return array('form' => $form, 'id' => $id, 'vacancy' => $vacancy, 'languages' => $languages);
+        return array(
+            'form' => $form, 
+            'id' => $id, 
+            'vacancy' => $vacancy, 
+            'languages' => $languages,
+            'defLang' => $model->getConfig()->language_default
+        );
     }
     
     public function deleteAction()
