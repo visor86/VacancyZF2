@@ -1,4 +1,4 @@
-ZendSkeletonApplication
+VacancyZF2 Application
 =======================
 
 Introduction
