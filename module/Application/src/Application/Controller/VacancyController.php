@@ -33,6 +33,7 @@ class VacancyController extends BaseController
         foreach ($languages as $language) {
             $form->setDescriptions($language->languageId);
         }
+        
         $form->get('submit')->setValue('Add');
         
         $request = $this->getRequest();
@@ -43,7 +44,7 @@ class VacancyController extends BaseController
             $form->setInputFilter($vacancy->getInputFilter());
             $form->setData($request->getPost());
             if ($form->isValid()) {
-                $vacancy->enabled = $languages;
+                $vacancy->enabled = $request->getPost('enabled');
                 try {
                     foreach ($languages as $language) {
                         if (!empty($request->getPost("title_{$language->languageId}"))) {

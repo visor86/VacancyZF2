@@ -55,9 +55,7 @@ class VacancyControllerTest extends PHPUnit_Framework_TestCase
         $this->routeMatch->setParam('action', 'add');
         
         $postData = array(
-            'departmentsDepartment' => array(
-                '3' , '4'
-            ),
+            'departmentsDepartment' => array(1, 3),
             'vacancyId' => '',
             'enabled' => 1,
             'title_1' => 'Vacancy test title for language EN',
@@ -85,9 +83,7 @@ class VacancyControllerTest extends PHPUnit_Framework_TestCase
         $this->routeMatch->setParam('id', '1');
         
         $postData = array(
-            'departmentsDepartment' => array(
-                '3' , '4'
-            ),
+            'departmentsDepartment' => array(1, 3),
             'vacancyId' => 1,
             'enabled' => 1,
             'title_1' => 'Vacancy test title for language EN',
@@ -105,7 +101,6 @@ class VacancyControllerTest extends PHPUnit_Framework_TestCase
         }
         $this->controller->dispatch($this->request);
         $response = $this->controller->getResponse();
-        fwrite(STDERR, print_r($this->routeMatch, TRUE));
         
         $this->assertEquals(302, $response->getStatusCode());
     }

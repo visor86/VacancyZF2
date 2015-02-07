@@ -51,6 +51,7 @@ class LanguageControllerTest extends PHPUnit_Framework_TestCase
         $this->routeMatch->setParam('action', 'add');
         
         $this->request->setMethod('post');
+        $this->request->getPost()->set('languageId', '');
         $this->request->getPost()->set('title', 'Language test');
         $this->request->getPost()->set('submit', 'Add');
         
@@ -58,18 +59,17 @@ class LanguageControllerTest extends PHPUnit_Framework_TestCase
         $response = $this->controller->getResponse();
         
         $this->assertEquals(302, $response->getStatusCode());
-        
-        //$this->assertRedirectTo('/languages');
     }
 
     public function testEditActionCanBeAccessed()
     {
         $this->routeMatch->setParam('action', 'edit');
-        $this->routeMatch->setParam('id', '5');
+        $this->routeMatch->setParam('id', '1');
         
         $this->request->setMethod('post');
+        $this->request->getPost()->set('languageId', '1');
         $this->request->getPost()->set('title', 'Language test');
-        $this->request->getPost()->set('submit', 'Add');
+        $this->request->getPost()->set('submit', 'Save');
         
         $result   = $this->controller->dispatch($this->request);
         $response = $this->controller->getResponse();

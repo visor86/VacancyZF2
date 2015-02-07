@@ -51,6 +51,7 @@ class DepartmentControllerTest extends PHPUnit_Framework_TestCase
         $this->routeMatch->setParam('action', 'add');
         
         $this->request->setMethod('post');
+        $this->request->getPost()->set('departmentId', '');
         $this->request->getPost()->set('title', 'Department test');
         $this->request->getPost()->set('submit', 'Add');        
         $result   = $this->controller->dispatch($this->request);
@@ -65,8 +66,9 @@ class DepartmentControllerTest extends PHPUnit_Framework_TestCase
         $this->routeMatch->setParam('id', '1');
         
         $this->request->setMethod('post');
+        $this->request->getPost()->set('departmentId', '1');
         $this->request->getPost()->set('title', 'Department test');
-        $this->request->getPost()->set('submit', 'Add');        
+        $this->request->getPost()->set('submit', 'Save');        
 
         $this->controller->dispatch($this->request);
         $response = $this->controller->getResponse();
