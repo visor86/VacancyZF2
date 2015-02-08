@@ -48,7 +48,7 @@ class Descriptions
      * @ORM\GeneratedValue(strategy="NONE")
      * @ORM\ManyToOne(targetEntity="Application\Entity\Vacancies", inversedBy="descriptions", cascade={"persist"})
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="vacancy_id", referencedColumnName="vacancy_id", unique=false)
+     *   @ORM\JoinColumn(name="vacancy_id", referencedColumnName="vacancy_id", unique=false, onDelete="CASCADE")
      * })
      */
     private $vacancies;
@@ -59,7 +59,7 @@ class Descriptions
      * @ORM\GeneratedValue(strategy="NONE")
      * @ORM\ManyToOne(targetEntity="Application\Entity\Languages", inversedBy="descriptions", cascade={"persist"})
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="language_id", referencedColumnName="language_id", unique=false)
+     *   @ORM\JoinColumn(name="language_id", referencedColumnName="language_id", unique=false, onDelete="CASCADE")
      * })
      */
     private $languages;
