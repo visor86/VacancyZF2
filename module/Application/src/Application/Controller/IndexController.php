@@ -19,11 +19,14 @@ class IndexController extends BaseController
         $request = $this->getRequest();
         
         $filter['lang'] = (int) $request->getQuery('lang', 1);
+        $filter['dep'] = array();
         foreach($request->getQuery('dep', array()) as $v) {
             $filter['dep'][] = (int) $v;
         }
         
         $vacancies = $vacancy->getVacanciesAll($objectManager, $filter);
+        
+        arsort($vacancies);
         
         $cacheId = 'languagesForVacancies';
         if ($cache->contains($cacheId)) {
