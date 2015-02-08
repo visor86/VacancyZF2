@@ -48,7 +48,7 @@ class VacancyController extends BaseController
                 $vacancy->enabled = $request->getPost('enabled');
                 try {
                     foreach ($languages as $language) {
-                        if (!empty($request->getPost("title_{$language->languageId}"))) {
+                        if ($request->getPost("title_{$language->languageId}")) {
                             $description = new \Application\Entity\Descriptions();
                             $description->setVacancyText($request->getPost("text_{$language->languageId}"));
                             $description->setVacancyTitle($request->getPost("title_{$language->languageId}"));
@@ -135,7 +135,7 @@ class VacancyController extends BaseController
                     $arId = $request->getPost('id');
                     foreach ($languages as $language) {
                         $languageId = $language->languageId;
-                        if (!empty($request->getPost("title_{$languageId}"))) {
+                        if ($request->getPost("title_{$languageId}")) {
                             if (!empty($arId[$languageId])) {
                                 $description = $objectManager->find('\Application\Entity\Descriptions', (int) $arId[$languageId]);
                             } else {
